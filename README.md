@@ -10,4 +10,4 @@ I thought it was a fun project and there was a few ways that I could expand and 
 - More efficient print to terminal
 - Wind
 - Snow accumulation
-- colors (white, red and green, and random colors)
+- Colors (white, red and green, and random colors)
