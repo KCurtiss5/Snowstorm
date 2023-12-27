@@ -4,10 +4,10 @@ I had the idea after watching this youtube video by Engineer Man: [video](https:
 
 I thought it was a fun project and there was a few ways that I could expand and improve upon it.
 
-### Enhancements:
+## Enhancements
+
 - Command line args
 - More efficient print to terminal
 - Wind
-- Random variation
-- Snow buildup
+- Snow accumulation
 - colors (white, red and green, and random colors)
