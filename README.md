@@ -11,3 +11,4 @@ I thought it was a fun project and there was a few ways that I could expand and 
 - Wind
 - Snow accumulation
 - Colors (white, red and green, and random colors)
+- A secret "Fall" setting
