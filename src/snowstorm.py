@@ -2,7 +2,7 @@ import argparse
 import os
 import random
 import time
-from custom_types import percentage, positive_float, Color
+from custom_types import percentage, positive_float, colors
 
 
 def parse_arguments():
@@ -14,8 +14,8 @@ def parse_arguments():
         help='Set the percentage of the screen to be snowflakes. Default: 5')
     parser.add_argument('-t', '--delay', default=.3, type=positive_float,
         help='Set the delay in seconds before spawning new snowflakes and moving others to DELAY. Default: 0.3')
-    parser.add_argument('-c', '--color', type=Color, choices=list(Color), default="white",
-        help='Set the color of snowflakes to white, red & green or a random color. Default: white')
+    parser.add_argument('-c', '--color', type=str, choices=["white", "rg", "all"], default="white",
+        help='Set the color of snowflakes to white, red & green, or a random color. Default: white')
     parser.add_argument('-w', '--wind', action='store_true',
         help='Enable wind. The wind direction is random and can change in runtime. Defailt: False')
     parser.add_argument('-a', '--accumulate', nargs='?', default=False, const=5, type=percentage,
@@ -27,10 +27,16 @@ def parse_arguments():
 def draw_grid(grid, height):
     output = ''
     for row in grid:
-        output += ''.join(row) + '\n'
+        output += row + '\n'
     output = output.strip('\n')
     print(output, end='')
     print('\033[F' * height, end='')
+
+
+def add_color(snowflake, color):
+    RESET = '\033[0m'
+    color = random.choice(colors[color])
+    return color + snowflake + RESET
 
 
 def main():
@@ -41,13 +47,16 @@ def main():
     grid = [' ' * width] * height
 
     while True:
-        row = []
+        row = ''
 
         for _ in range(width):
             if random.random() < density/100:
-                row.append(random.choice(snowflakes))
+                snowflake = random.choice(snowflakes)
+                if (color != "white"):
+                    snowflake = add_color(snowflake, color)
+                row += snowflake
             else:
-                row.append(' ')
+                row += ' '
 
         grid.insert(0, row)
         grid.pop()

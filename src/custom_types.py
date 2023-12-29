@@ -1,14 +1,9 @@
 import argparse
-import enum
 
-
-class Color(enum.Enum):
-    white = 'white'
-    RG = 'rg'
-    all = 'all'
-
-    def __str__(self):
-        return self.value
+colors = {
+    'rg': ['\033[91m', '\033[92m'],  # red & green
+    'all': ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m', '\033[96m']
+}
 
 
 def integer_type(num, type, str, min, max=None):
