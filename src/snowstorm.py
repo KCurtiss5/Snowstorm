@@ -3,6 +3,7 @@ import os
 import random
 import time
 from custom_types import percentage, positive_float, colors
+from helper import clamp
 
 
 def parse_arguments():
@@ -24,7 +25,7 @@ def parse_arguments():
     return (args.density, args.delay, args.color, args.wind, args.accumulate)
 
 
-def draw_grid(grid, height):
+def draw_snowflakes(grid, height):
     output = ''
     for row in grid:
         output += row + '\n'
@@ -33,16 +34,39 @@ def draw_grid(grid, height):
     print('\033[F' * height, end='')
 
 
+def add_snowflake(density, color):
+    snowflakes = ['❅', '❆', '❃', '❈', '❉', '*', '•', '·']
+    if random.random() < density/100:
+        snowflake = random.choice(snowflakes)
+        if (color != "white"):
+            snowflake = add_color(snowflake, color)
+        return snowflake
+    else:
+        return ' '
+
+
 def add_color(snowflake, color):
     RESET = '\033[0m'
     color = random.choice(colors[color])
     return color + snowflake + RESET
 
 
+def add_wind(grid, strength, num_rows, density, color):
+    if strength > 0:
+        for i in range(min(len(grid), num_rows)):
+            grid[i] = ''.join(add_snowflake(density, color) for _ in range(strength)) + grid[i][:-strength]
+    elif strength < 0:
+        strength = abs(strength)
+        for i in range(min(len(grid), num_rows)):
+            grid[i] = grid[i][strength:] + ''.join(add_snowflake(density, color) for _ in range(strength))
+
+
 def main():
     density, delay, color, wind, accumulate = parse_arguments()
-    snowflakes = ['❅', '❆', '❃', '❈', '❉', '*', '•', '·']
     width, height = os.get_terminal_size()
+
+    wind_strength = random.randint(-3, 3)
+    rows_with_snow = 0
 
     grid = [' ' * width] * height
 
@@ -50,17 +74,18 @@ def main():
         row = ''
 
         for _ in range(width):
-            if random.random() < density/100:
-                snowflake = random.choice(snowflakes)
-                if (color != "white"):
-                    snowflake = add_color(snowflake, color)
-                row += snowflake
-            else:
-                row += ' '
+            row += add_snowflake(density, color)
+        rows_with_snow += 1
+        rows_with_snow = clamp(rows_with_snow, 0, height)
+
+        if (wind):
+            wind_strength += random.randint(-1, 1)
+            wind_strength = clamp(wind_strength, -3, 3)
+            add_wind(grid, wind_strength, rows_with_snow, density, color)
 
         grid.insert(0, row)
         grid.pop()
-        draw_grid(grid, height)
+        draw_snowflakes(grid, height)
 
         time.sleep(delay)
 
