@@ -29,7 +29,7 @@ def parse_arguments():
 def draw_snowflakes(grid, height):
     output = ''
     for row in grid:
-        output += row + '\n'
+        output += ''.join(row) + '\n'
     output = output.strip('\n')
     print(output, end='')
     print('\033[F' * height, end='')
@@ -53,7 +53,7 @@ def add_wind(grid, strength, num_rows, density, color):
     strength = abs(strength)
 
     for i in range(min(len(grid), num_rows)):
-        snowflakes = ''.join(add_snowflake(density, color) for _ in range(strength))
+        snowflakes = [''.join(add_snowflake(density, color) for _ in range(strength))]
         if rightward:
             grid[i] = snowflakes + grid[i][:-strength]
         else:
@@ -67,13 +67,13 @@ def main():
     wind_strength = random.randint(-3, 3)
     rows_with_snow = 0
 
-    grid = [' ' * width] * height
+    grid = [[' ' for _ in range(width)] for _ in range(height)]
 
     while True:
-        row = ''
+        row = []
 
         for _ in range(width):
-            row += add_snowflake(density, color)
+            row.append(add_snowflake(density, color))
         rows_with_snow += 1
         rows_with_snow = clamp(rows_with_snow, 0, height)
 
