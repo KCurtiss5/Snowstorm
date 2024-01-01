@@ -2,7 +2,8 @@ import argparse
 import os
 import random
 import time
-from custom_types import percentage, positive_float, colors
+from custom_types import percentage, positive_float
+from colors import colors
 from helper import clamp
 
 
@@ -36,13 +37,7 @@ def draw_snowflakes(grid, height):
 
 def add_snowflake(density, color):
     snowflakes = ['❅', '❆', '❃', '❈', '❉', '*', '•', '·']
-    if random.random() < density/100:
-        snowflake = random.choice(snowflakes)
-        if (color != "white"):
-            snowflake = add_color(snowflake, color)
-        return snowflake
-    else:
-        return ' '
+    return add_color(random.choice(snowflakes), color) if random.random() < density/100 else ' '
 
 
 def add_color(snowflake, color):
