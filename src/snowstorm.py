@@ -52,13 +52,17 @@ def add_color(snowflake, color):
 
 
 def add_wind(grid, strength, num_rows, density, color):
-    if strength > 0:
-        for i in range(min(len(grid), num_rows)):
-            grid[i] = ''.join(add_snowflake(density, color) for _ in range(strength)) + grid[i][:-strength]
-    elif strength < 0:
-        strength = abs(strength)
-        for i in range(min(len(grid), num_rows)):
-            grid[i] = grid[i][strength:] + ''.join(add_snowflake(density, color) for _ in range(strength))
+    if strength == 0:
+        return
+    rightward = True if strength > 0 else False
+    strength = abs(strength)
+
+    for i in range(min(len(grid), num_rows)):
+        snowflakes = ''.join(add_snowflake(density, color) for _ in range(strength))
+        if rightward:
+            grid[i] = snowflakes + grid[i][:-strength]
+        else:
+            grid[i] = grid[i][strength:] + snowflakes
 
 
 def main():
