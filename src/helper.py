@@ -2,11 +2,14 @@ def clamp(n, minimum, maximum):
     return (max(minimum, min(n, maximum)))
 
 
-def count_new_snowflakes(width, new_row):
-    return width - list.count(new_row, ' ')
+def count_snowflakes(width, row):
+    return width - list.count(row, ' ')
 
-def count_snowflakes(width, grid):
+def count_total_snowflakes(width, grid):
     total = 0
-    for line in grid:
-        total += width - list.count(line, ' ')
+    for row in grid:
+        total += count_snowflakes(width, row)
     return total
+
+def init_grid(height, width) -> list:
+    return [[' ' for _ in range(width)] for _ in range(height)]

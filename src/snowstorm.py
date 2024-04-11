@@ -1,16 +1,17 @@
 import argparse
-import os
-import random
-import time
-import math
+from os import get_terminal_size
+from math import floor
+from time import time, sleep
+from random import randint, choice, random
+
 from custom_types import percentage, positive
 from colors import COLORS
-from helper import clamp, count_new_snowflakes, count_snowflakes
+import helper
 
 #constants
 RESET = '\033[0m'
 SNOWFLAKES = ['❅', '❆', '❃', '❈', '❉', '*', '•', '·']
-START_TIME = time.time()
+START_TIME = time()
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -43,18 +44,18 @@ def draw_snowflakes(grid, height, stats_str=None):
 
 
 def add_snowflake(density, color):
-    return add_color(random.choice(SNOWFLAKES), color) if random.random() < density/100 else ' '
+    return add_color(choice(SNOWFLAKES), color) if random() < density/100 else ' '
 
 
 def add_color(snowflake, color):
-    color = random.choice(COLORS[color])
+    color = choice(COLORS[color])
     return color + snowflake + RESET
 
-def make_stats_str(width, tot_snowflakes, cur_snowflakes, num_frames, runtime) -> str:
+def make_stats_str(width, grid, tot_snowflakes, num_frames) -> str:
     tot_snow = f"Total Snowflakes: {tot_snowflakes}"
-    cur_snow = f"Current Snowflakes: {cur_snowflakes}"
+    cur_snow = f"Current Snowflakes: {helper.count_total_snowflakes(width, grid)}"
     frames = f"Total Frames: {num_frames}"
-    time_str = f"Runtime: {runtime} seconds"
+    time_str = f"Runtime: {floor(time() - START_TIME)} seconds"
 
     # Calculate available space for aligning components
     total_length = sum(map(len, [tot_snow, cur_snow, frames, time_str]))
@@ -79,39 +80,31 @@ def add_wind(grid, strength, num_rows, density, color):
 
 def main():
     density, delay, color, wind, accumulate, stats = parse_arguments()
-    width, height = os.get_terminal_size()
+    width, height = get_terminal_size()
 
     if stats:
         height -= 1
 
-    wind_strength = random.randint(-3, 3)
-    rows_with_snow = 0
+    wind_strength = randint(-3, 3)
 
     #stats variables
     total_snowflakes = 0
     stats_str = None
     num_frames = 0
 
-    grid = [[' ' for _ in range(width)] for _ in range(height)]
+    grid = helper.init_grid(height, width)
 
     while True:
-        row = []
+        row = [add_snowflake(density, color) for _ in range(width)]
+        total_snowflakes += helper.count_snowflakes(width, row)
 
-        for _ in range(width):
-            row.append(add_snowflake(density, color))
-
-        rows_with_snow += 1
-        rows_with_snow = clamp(rows_with_snow, 0, height)
         if stats:
-            total_snowflakes += count_new_snowflakes(width, row)
-            stats_str = make_stats_str(
-                width, total_snowflakes, count_snowflakes(width, grid), num_frames,
-                math.floor(time.time() - START_TIME))
+            stats_str = make_stats_str(width, grid, total_snowflakes, num_frames)
 
         if wind:
-            wind_strength += random.randint(-1, 1)
-            wind_strength = clamp(wind_strength, -3, 3)
-            add_wind(grid, wind_strength, rows_with_snow, density, color)
+            wind_strength += randint(-1, 1)
+            wind_strength = helper.clamp(wind_strength, -3, 3)
+            add_wind(grid, wind_strength, num_frames, density, color)
 
         if accumulate:
             pass #to get pylint to pass for now
@@ -121,7 +114,7 @@ def main():
         draw_snowflakes(grid, height, stats_str)
 
         num_frames += 1
-        time.sleep(delay)
+        sleep(delay)
 
 
 if __name__ == "__main__":
