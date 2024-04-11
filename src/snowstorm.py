@@ -2,10 +2,12 @@ import argparse
 import os
 import random
 import time
-from custom_types import percentage, positive_float
-from colors import colors
+from custom_types import percentage, positive
+from colors import COLORS
 from helper import clamp
 
+#constants
+RESET = '\033[0m'
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -13,15 +15,15 @@ def parse_arguments():
         description='snowstorm - create a local snowstorm in your terminal',
     )
     parser.add_argument('-d', '--density', default=5, type=percentage,
-        help='Set the percentage of the screen to be snowflakes. Default: 5')
-    parser.add_argument('-t', '--delay', default=.3, type=positive_float,
-        help='Set the delay in seconds before spawning new snowflakes and moving others to DELAY. Default: 0.3')
+        help='Set the percentage of the screen to be snWowflakes. Default: 5')
+    parser.add_argument('-t', '--delay', default=.3, type=positive,
+        help='Set the delay in seconds before snowflakes fall. Default: 0.3')
     parser.add_argument('-c', '--color', type=str, choices=["white", "rg", "all"], default="white",
         help='Set the color of snowflakes to white, red & green, or a random color. Default: white')
     parser.add_argument('-w', '--wind', action='store_true',
         help='Enable wind. The wind direction is random and can change in runtime. Defailt: False')
     parser.add_argument('-a', '--accumulate', nargs='?', default=False, const=5, type=percentage,
-        help='Snowflakes have a NUM percentage chance to result in a █ character and "accumulate" at the bottom. Default: False, or 5 if enabled.')
+        help='Snowflakes now have a NUM chance to "accumulate" at the bottom. Default: False or 5')
     args = parser.parse_args()
     return (args.density, args.delay, args.color, args.wind, args.accumulate)
 
@@ -41,15 +43,14 @@ def add_snowflake(density, color):
 
 
 def add_color(snowflake, color):
-    RESET = '\033[0m'
-    color = random.choice(colors[color])
+    color = random.choice(COLORS[color])
     return color + snowflake + RESET
 
 
 def add_wind(grid, strength, num_rows, density, color):
     if strength == 0:
         return
-    rightward = True if strength > 0 else False
+    rightward = strength > 0
     strength = abs(strength)
 
     for i in range(min(len(grid), num_rows)):
@@ -77,10 +78,13 @@ def main():
         rows_with_snow += 1
         rows_with_snow = clamp(rows_with_snow, 0, height)
 
-        if (wind):
+        if wind:
             wind_strength += random.randint(-1, 1)
             wind_strength = clamp(wind_strength, -3, 3)
             add_wind(grid, wind_strength, rows_with_snow, density, color)
+
+        if accumulate:
+            pass #to get pylint to pass for now
 
         grid.insert(0, row)
         grid.pop()

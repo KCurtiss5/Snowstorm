@@ -1,4 +1,4 @@
-colors = {
+COLORS = {
     'white': ['\033[37m', '\033[97m'],
     'rg': [
         '\033[31m', '\033[32m',  # red, green
