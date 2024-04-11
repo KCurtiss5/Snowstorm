@@ -95,6 +95,8 @@ def main():
     grid = helper.init_grid(height, width)
 
     while True:
+        frame_start_time = time()
+
         row = [add_snowflake(density, color) for _ in range(width)]
         total_snowflakes += helper.count_snowflakes(width, row)
 
@@ -114,7 +116,8 @@ def main():
         draw_snowflakes(grid, height, stats_str)
 
         num_frames += 1
-        sleep(delay)
+        frame_elapsed_time = time() - frame_start_time
+        sleep(max(0, delay - frame_elapsed_time))
 
 
 if __name__ == "__main__":
