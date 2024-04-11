@@ -23,7 +23,7 @@ def parse_arguments():
     parser.add_argument('-w', '--wind', action='store_true',
         help='Enable wind. The wind direction is random and can change in runtime. Defailt: False')
     parser.add_argument('-a', '--accumulate', nargs='?', default=False, const=5, type=percentage,
-        help='Snowflakes now have a NUM chance to "accumulate" at the bottom. Default: False or 5')
+        help='Snowflakes have a NUM percent chance to accumulate. Default: False or 5')
     args = parser.parse_args()
     return (args.density, args.delay, args.color, args.wind, args.accumulate)
 
