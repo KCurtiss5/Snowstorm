@@ -1,2 +1,2 @@
-def clamp(n, smallest, largest):
-    return (max(smallest, min(n, largest)))
+def clamp(n, minimum, maximum):
+    return (max(minimum, min(n, maximum)))
