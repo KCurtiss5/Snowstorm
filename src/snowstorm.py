@@ -1,4 +1,5 @@
 import argparse
+import sys
 from os import get_terminal_size
 from math import floor
 from time import time, sleep
@@ -28,19 +29,19 @@ def parse_arguments():
         help='Enable wind. The wind direction is random and can change in runtime. Defailt: False')
     parser.add_argument('-a', '--accumulate', nargs='?', default=False, const=5, type=percentage,
         help='Snowflakes have a NUM percent chance to accumulate. Default: False or 5')
-    parser.add_argument('-v', '--statistics', action='store_true',
+    parser.add_argument('-v', '--stats', action='store_true',
         help='Enable program statistics. Default = False')
     args = parser.parse_args()
     return (args.density, args.delay, args.color,
-            args.wind, args.accumulate, args.statistics)
+            args.wind, args.accumulate, args.stats)
 
 
 def draw_snowflakes(grid, height, stats_str=None):
     output = '\n'.join(''.join(row) for row in grid)
-    print(output, end='')
     if stats_str:
-        print(stats_str, end='\033[F')
-    print('\033[F' * height, end='')
+        output += stats_str + '\033[F'
+    output += '\033[F' * height
+    sys.stdout.write(output)
 
 
 def add_snowflake(density, color):
@@ -78,6 +79,7 @@ def add_wind(grid, strength, num_rows, density, color):
         else:
             grid[i] = grid[i][strength:] + snowflakes
 
+
 def main():
     density, delay, color, wind, accumulate, stats = parse_arguments()
     width, height = get_terminal_size()
@@ -109,7 +111,7 @@ def main():
             add_wind(grid, wind_strength, num_frames, density, color)
 
         if accumulate:
-            pass #to get pylint to pass for now
+            pass #Future implementation
 
         grid.insert(0, row)
         grid.pop()
