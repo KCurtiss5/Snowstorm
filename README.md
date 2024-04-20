@@ -2,7 +2,7 @@
 
  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT) ![pylint badge](https://img.shields.io/badge/pylint-passing-green "Pylint Badge") ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 
- ![Snowstorm Vid](/res/snowstorm.mp4)
+ ![Snowstorm Vid](/res/snowstorm.png)
 
 I had the idea for this project after watching this youtube video by Engineer Man: [video](https://www.youtube.com/watch?v=_chP0a4PMTM&ab_channel=EngineerMan).
 
